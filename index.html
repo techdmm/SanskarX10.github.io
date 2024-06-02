@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Learning Lab Notes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+    <style>
+        body {
+            background-image: url("path/to/graph_paper_background.jpg");
+            font-family: 'Courier New', monospace;
+            color: #333;
+            display: flex; /* Center content vertically and horizontally */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensure background covers entire viewport */
+        }
+        .notebook-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid #ddd;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .notebook-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #007bff; 
+        }
+
+        .notebook-pages .card {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+            border: 1px dashed #ddd;
+            margin-bottom: 1.5rem;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s; /* Add transition effect */
+        }
+
+        .notebook-pages .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #007bff; /* Deep learning blue */
+            color: #fff;
+            font-weight: bold;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .add-button {
+            background-color: #28a745; /* Green for "Add" */
+            border-color: #28a745;
+            width: 100%;
+        }
+
+        .modal-content {
+            background-color: rgba(255, 255, 255, 0.9); 
+            border: 1px dashed #ddd;
+        }
+        .modal-header, .modal-footer {
+            background-color: #f8f9fa;
+        }
+        textarea {
+            resize: vertical; 
+            min-height: 100px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container notebook-container">
+        <h1 class="notebook-title"><i class="fas fa-brain"></i> Shards of my brain.safetensors</h1>
+        <div id="learnings" class="notebook-pages"></div>
+        <button class="btn add-button" data-bs-toggle="modal" data-bs-target="#addModal"><i class="fas fa-plus"></i> Add Entry</button>
+    </div>
+    
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">Add New Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addForm">
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="learning" class="form-label">What did you learn or read?</label>
+                            <textarea class="form-control" id="learning" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="addButton">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const learningsContainer = document.getElementById('learnings');
+        const addForm = document.getElementById('addForm');
+        const addButton = document.getElementById('addButton');
+
+        // Load existing entries from localStorage
+        const entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries.forEach(entry => {
+          createEntryCard(entry.date, entry.learning);
+        });
+
+        addButton.addEventListener('click', () => {
+          const date = addForm.date.value;
+          const learning = addForm.learning.value;
+
+          if (date && learning) {
+            const entry = { date, learning };
+            entries.push(entry);
+            localStorage.setItem('entries', JSON.stringify(entries));
+            createEntryCard(date, learning);
+            addForm.reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+            modal.hide();
+          }
+        });
+
+        function createEntryCard(date, learning) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const cardHeader = document.createElement('div');
+            cardHeader.classList.add('card-header');
+            cardHeader.textContent = date;
+
+            const cardBody = document.createElement('div');
+            cardBody.classList.add('card-body');
+            cardBody.textContent = learning;
+
+            card.appendChild(cardHeader);
+            card.appendChild(cardBody);
+
+            learningsContainer.appendChild(card);
+        }
+    </script>
+</body>
+</html>
