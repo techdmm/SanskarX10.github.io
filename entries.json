@@ -1,0 +1,10 @@
+[
+    {
+      "date": "2023-07-19",
+      "learning": "Learned about transformers architecture"
+    },
+    {
+      "date": "2023-07-20",
+      "learning": "Implemented a basic neural network using PyTorch"
+    }
+  ]
