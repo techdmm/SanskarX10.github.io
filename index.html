@@ -57,21 +57,36 @@
     <div class="container notebook-container">
         <h1 class="notebook-title"><i class="fas fa-brain"></i> Shards of my brain.safetensors</h1>
         <div id="learnings" class="notebook-pages"></div>
+        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const learningsContainer = document.getElementById('learnings');
+        const errorMessage = document.getElementById('error-message');
 
         // Load entries from a JSON file
-        fetch('entries.json')
-            .then(response => response.json())
+        fetch('/.entries.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(entries => {
+                console.log('Entries loaded:', entries);  // Log the loaded entries
+                if (entries.length === 0) {
+                    throw new Error('No entries found in the JSON file.');
+                }
                 entries.forEach(entry => {
                     createEntryCard(entry.date, entry.learning);
                 });
             })
-            .catch(error => console.error('Error loading entries:', error));
+            .catch(error => {
+                console.error('Error loading entries:', error);
+                errorMessage.textContent = `Error loading entries: ${error.message}`;
+                errorMessage.style.display = 'block';
+            });
 
         function createEntryCard(date, learning) {
             const card = document.createElement('div');
@@ -89,6 +104,7 @@
             card.appendChild(cardBody);
 
             learningsContainer.appendChild(card);
+            console.log('Card created for entry:', { date, learning });  // Log each created card
         }
     </script>
 </body>
