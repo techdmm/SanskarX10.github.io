@@ -1,11 +1,15 @@
 [
     {
       "date": "2024-07-18",
-      "learning": "revisited four fundamental spaces in linear algebra,
-        tried hosting an embedding model api"
+      "learning": [
+        "Revisited four fundamental spaces in linear algebra",
+        "Tried hosting an embedding model API"
+      ]
     },
     {
       "date": "2024-07-19",
-      "learning": "orthogonality in matrices"
+      "learning": [
+        "Orthogonality in matrices"
+      ]
     }
-  ]
+]
