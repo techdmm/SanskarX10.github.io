@@ -1,10 +1,11 @@
 [
     {
-      "date": "2023-07-19",
-      "learning": "Learned about transformers architecture"
+      "date": "2024-07-18",
+      "learning": "revisited four fundamental spaces in linear algebra,
+        tried hosting an embedding model api"
     },
     {
-      "date": "2023-07-20",
-      "learning": "Implemented a basic neural network using PyTorch"
+      "date": "2024-07-19",
+      "learning": "orthogonality in matrices"
     }
   ]
