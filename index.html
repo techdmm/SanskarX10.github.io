@@ -124,7 +124,6 @@
             </div>
         </div>
         <div class="window-body" id="entries-container">
-            <!-- Entries will be dynamically added here -->
         </div>
     </div>
     <div id="error-message"></div>
@@ -148,9 +147,16 @@
                 entries.forEach(entry => {
                     const entryDiv = document.createElement('div');
                     entryDiv.classList.add('section');
+                    
+                    let learningsHTML = '<ul>';
+                    entry.learning.forEach(item => {
+                        learningsHTML += `<li>${item}</li>`;
+                    });
+                    learningsHTML += '</ul>';
+
                     entryDiv.innerHTML = `
                         <h2>${entry.date}</h2>
-                        <p>${entry.learning}</p>
+                        ${learningsHTML}
                     `;
                     entriesContainer.appendChild(entryDiv);
                 });
