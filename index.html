@@ -20,6 +20,7 @@
             border-bottom-color: #808080;
             box-shadow: inset -1px -1px #404040, inset 1px 1px #dfdfdf;
             padding: 2px;
+            margin-bottom: 20px;
         }
         .title-bar {
             background: linear-gradient(90deg, #000080, #1084d0);
@@ -42,18 +43,14 @@
         .window-body {
             padding: 10px;
             display: flex;
+            flex-wrap: wrap;
         }
         .section {
             background-color: #fff;
             border: 1px solid #808080;
             padding: 10px;
             margin: 5px;
-        }
-        .left-section {
-            flex: 1;
-        }
-        .right-section {
-            flex: 1;
+            flex: 1 1 300px;
         }
         h2 {
             font-size: 14px;
@@ -81,9 +78,35 @@
             margin-top: 10px;
             display: none;
         }
+        .expand-button {
+            background-color: #c0c0c0;
+            border: 1px solid #808080;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">Bio</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="section">
+                <p>you can call me sanskar, a passionate ml researcher, currently ml engineer @ ****** (maritime ai startup).</p>
+            </div>
+        </div>
+    </div>
+
     <div class="window">
         <div class="title-bar">
             <div class="title-bar-text">omw to be cracked</div>
@@ -94,7 +117,7 @@
             </div>
         </div>
         <div class="window-body">
-            <div class="left-section section">
+            <div class="section">
                 <h2>Things I'm Working On</h2>
                 <ul>
                     <li>custom linear algebra framework</li>
@@ -103,7 +126,7 @@
                     <li>custom physics embedding model</li>
                 </ul>
             </div>
-            <div class="right-section section">
+            <div class="section">
                 <h2>Links</h2>
                 <ul>
                     <li><a href="https://www.linkedin.com/in/sanskarshrivastava/"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
@@ -114,7 +137,8 @@
             </div>
         </div>
     </div>
-    <div id="learnings" class="window" style="margin-top: 20px;">
+
+    <div id="learnings" class="window">
         <div class="title-bar">
             <div class="title-bar-text">Shards of my brain.safetensors</div>
             <div class="title-bar-controls">
@@ -126,10 +150,25 @@
         <div class="window-body" id="entries-container">
         </div>
     </div>
+
+    <div id="recommended" class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">Recommended Reading and Vids</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body" id="recommended-container">
+        </div>
+    </div>
+
     <div id="error-message"></div>
 
     <script>
         const entriesContainer = document.getElementById('entries-container');
+        const recommendedContainer = document.getElementById('recommended-container');
         const errorMessage = document.getElementById('error-message');
 
         // Fetch entries from entries.json
@@ -164,6 +203,60 @@
             .catch(error => {
                 console.error('Error loading entries:', error);
                 errorMessage.textContent = `Error loading entries: ${error.message}`;
+                errorMessage.style.display = 'block';
+            });
+
+        // Fetch recommended reading and videos
+        fetch('recommended.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(recommendations => {
+                if (recommendations.length === 0) {
+                    throw new Error('No recommendations found in the JSON file.');
+                }
+                
+                const recentRecommendations = recommendations.slice(-5);
+                const olderRecommendations = recommendations.slice(0, -5);
+
+                let recentHTML = '<ul>';
+                recentRecommendations.forEach(item => {
+                    recentHTML += `<li><a href="${item.url}" target="_blank">${item.title}</a></li>`;
+                });
+                recentHTML += '</ul>';
+
+                let olderHTML = '<ul class="hidden">';
+                olderRecommendations.forEach(item => {
+                    olderHTML += `<li><a href="${item.url}" target="_blank">${item.title}</a></li>`;
+                });
+                olderHTML += '</ul>';
+
+                const recommendedSection = document.createElement('div');
+                recommendedSection.classList.add('section');
+                recommendedSection.innerHTML = `
+                    <h2>Recent Recommendations</h2>
+                    ${recentHTML}
+                    <h2>Older Recommendations</h2>
+                    ${olderHTML}
+                    <button class="expand-button">Show All</button>
+                `;
+
+                recommendedContainer.appendChild(recommendedSection);
+
+                const expandButton = recommendedSection.querySelector('.expand-button');
+                const olderList = recommendedSection.querySelector('ul.hidden');
+
+                expandButton.addEventListener('click', () => {
+                    olderList.classList.toggle('hidden');
+                    expandButton.textContent = olderList.classList.contains('hidden') ? 'Show All' : 'Hide Older';
+                });
+            })
+            .catch(error => {
+                console.error('Error loading recommendations:', error);
+                errorMessage.textContent = `Error loading recommendations: ${error.message}`;
                 errorMessage.style.display = 'block';
             });
     </script>
