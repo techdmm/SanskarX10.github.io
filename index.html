@@ -3,70 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Learning Lab Notes</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+    <title>My Windows 98 Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background-image: url("path/to/graph_paper_background.jpg");
-            font-family: 'Courier New', monospace;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            background-color: #c0c0c0;
+            color: #000;
+            margin: 0;
+            padding: 20px;
         }
-        .notebook-container {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 2px solid #ddd;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-top: 2rem;
+        .window {
+            background-color: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            box-shadow: inset -1px -1px #404040, inset 1px 1px #dfdfdf;
+            padding: 2px;
         }
-        .notebook-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            color: #007bff; 
-        }
-        .notebook-pages .card {
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px dashed #ddd;
-            margin-bottom: 1.5rem;
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .notebook-pages .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.15);
-        }
-        .card-header {
-            background-color: #007bff;
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
             color: #fff;
+            padding: 3px 5px;
             font-weight: bold;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .card-body {
-            padding: 1rem;
-            font-size: 1.1rem;
+        .title-bar-text {
+            font-size: 12px;
+        }
+        .title-bar-controls button {
+            width: 16px;
+            height: 14px;
+            border: 1px solid #fff;
+            background-color: #c0c0c0;
+        }
+        .window-body {
+            padding: 10px;
+            display: flex;
+        }
+        .section {
+            background-color: #fff;
+            border: 1px solid #808080;
+            padding: 10px;
+            margin: 5px;
+        }
+        .left-section {
+            flex: 1;
+        }
+        .right-section {
+            flex: 1;
+        }
+        h2 {
+            font-size: 14px;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        a {
+            color: #000080;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #error-message {
+            background-color: #ffcccc;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 10px;
+            margin-top: 10px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="container notebook-container">
-        <h1 class="notebook-title"><i class="fas fa-brain"></i> Shards of my brain.safetensors</h1>
-        <div id="learnings" class="notebook-pages"></div>
-        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">My Windows 98 Portfolio</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="left-section section">
+                <h2>Things I'm Working On</h2>
+                <ul>
+                    <li>Deep Learning Projects</li>
+                    <li>Web Development</li>
+                    <li>Data Analysis</li>
+                    <li>AI Research</li>
+                </ul>
+            </div>
+            <div class="right-section section">
+                <h2>Links</h2>
+                <ul>
+                    <li><a href="https://www.linkedin.com/in/sanskarshrivastava/"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                    <li><a href="https://github.com/SanskarX10"><i class="fab fa-github"></i> GitHub</a></li>
+                    <li><a href="/essays"><i class="fas fa-pen-fancy"></i> Essays</a></li>
+                    <li><a href="/resume.pdf" download><i class="fas fa-file-alt"></i> Resume</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
+    <div id="learnings" class="window" style="margin-top: 20px;">
+        <div class="title-bar">
+            <div class="title-bar-text">Shards of my brain.safetensors</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body" id="entries-container">
+            <!-- Entries will be dynamically added here -->
+        </div>
+    </div>
+    <div id="error-message"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const learningsContainer = document.getElementById('learnings');
+        const entriesContainer = document.getElementById('entries-container');
         const errorMessage = document.getElementById('error-message');
 
-        // Load entries from a JSON file
-        fetch('/.entries.json')
+        // Fetch entries from entries.json
+        fetch('entries.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,12 +142,17 @@
                 return response.json();
             })
             .then(entries => {
-                console.log('Entries loaded:', entries);  // Log the loaded entries
                 if (entries.length === 0) {
                     throw new Error('No entries found in the JSON file.');
                 }
                 entries.forEach(entry => {
-                    createEntryCard(entry.date, entry.learning);
+                    const entryDiv = document.createElement('div');
+                    entryDiv.classList.add('section');
+                    entryDiv.innerHTML = `
+                        <h2>${entry.date}</h2>
+                        <p>${entry.learning}</p>
+                    `;
+                    entriesContainer.appendChild(entryDiv);
                 });
             })
             .catch(error => {
@@ -87,25 +160,6 @@
                 errorMessage.textContent = `Error loading entries: ${error.message}`;
                 errorMessage.style.display = 'block';
             });
-
-        function createEntryCard(date, learning) {
-            const card = document.createElement('div');
-            card.classList.add('card');
-
-            const cardHeader = document.createElement('div');
-            cardHeader.classList.add('card-header');
-            cardHeader.textContent = date;
-
-            const cardBody = document.createElement('div');
-            cardBody.classList.add('card-body');
-            cardBody.textContent = learning;
-
-            card.appendChild(cardHeader);
-            card.appendChild(cardBody);
-
-            learningsContainer.appendChild(card);
-            console.log('Card created for entry:', { date, learning });  // Log each created card
-        }
     </script>
 </body>
 </html>
