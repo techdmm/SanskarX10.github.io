@@ -11,5 +11,13 @@
       "learning": [
         "Orthogonality in matrices"
       ]
+    },
+    {
+      "date": "2024-07-20",
+      "learning": [
+        "fine tuned qwen2 1.5b for maths",
+        "maybe will upload on huggingface",
+        "installed cuda drivers for 2.5 hours :("
+      ]
     }
 ]
