@@ -15,9 +15,23 @@
     {
       "date": "2024-07-20",
       "learning": [
-        "fine tuned qwen2 1.5b for maths",
+        "fine tuned qwen2 0.5b for maths",
         "maybe will upload on huggingface",
         "installed cuda drivers for 2.5 hours :("
+      ]
+    },
+    {
+      "date": "2024-07-25",
+      "learning": [
+        "deploying RAG api ain't an easy job",
+        "read mixture of experts paper by noam shazeer"
+      ]
+    },
+    {
+      "date": "2024-08-01",
+      "learning": [
+        "deployed an data aggregator on gcp ",
+        "writing a blog in distillation"
       ]
     }
 ]
