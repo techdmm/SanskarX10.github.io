@@ -1,0 +1,30 @@
+[
+  {
+    "title": " Basics of Distillation",
+    "date": "2024-08-01",
+    "content": "- a large trained model + a good regularizer
+- distillation - transfer its knowledge to the small model
+- large model assigns probabilities to the wrong class, less in value but still assigns but it tells us about how they generalize
+- objective_function(training) should reflect true objective , rather trained to optimize performance 
+- real objective = generalize to new data
+- but this needs info about correct ways to generalize , usually unavailable
+- small model + large trained model data < same generalization as large model + small model
+- how to do it? during knowledge transfer use soft target to train the smaller model
+- large model = small model 1 + small model 2 + small model 3 
+- soft target =  mean {probability_prediction (large model)} = probability_prediction (small model 1) + probability_prediction ( small_ model n)
+-  $$
+ H(Soft Targets)↑⟹I(Soft Targets)↑⟹σ2(Soft Targets)↓⟹Ndata​↓
+$$
+* H = entropy, I = information, mu = variance = N = training data (per training case)
+* Higher entropy means the predictions are less confident (more spread out among different classes) but carry more information. For example, a soft target distribution like (0.6, 0.3, 0.1) has higher entropy than a hard target like (1, 0, 0)
+* $$
+\ softmax(q_i) = \frac{e^{z_i / T}}{\sum_{j} e
+^{z_j / T}}
+​​$$
+*  raising the temperature in softmax gives less confident spread out probabilities  , high temp, lower logits , smaller values , softer probability  and vice versa
+* small model train dataset = distilled model dataset
+* distilled model dataset = transfer set + soft target distribution for each case in set
+* to be continued
+"
+  }
+]
