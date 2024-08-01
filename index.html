@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sanscar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/contrib/auto-render.min.js"></script>
     <style>
         body {
             font-family: 'MS Sans Serif', Arial, sans-serif;
@@ -88,6 +91,32 @@
         .hidden {
             display: none;
         }
+        .blog-post {
+            background-color: #fff;
+            border: 1px solid #808080;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .blog-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .blog-date {
+            font-size: 0.8em;
+            color: #808080;
+            margin-bottom: 5px;
+        }
+        .blog-content {
+            margin-top: 10px;
+        }
+        .blog-expand-button {
+            background-color: #c0c0c0;
+            border: 1px solid #808080;
+            padding: 2px 5px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -131,10 +160,22 @@
                 <ul>
                     <li><a href="https://www.linkedin.com/in/sanskarshrivastava/"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
                     <li><a href="https://github.com/SanskarX10"><i class="fab fa-github"></i> GitHub</a></li>
-                    <li><a href="/essays"><i class="fas fa-pen-fancy"></i> Essays</a></li>
                     <li><a href="/resume.pdf" download><i class="fas fa-file-alt"></i> Resume</a></li>
                 </ul>
             </div>
+        </div>
+    </div>
+
+    <div id="blog" class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">Blog Posts</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body" id="blog-container">
         </div>
     </div>
 
@@ -169,7 +210,56 @@
     <script>
         const entriesContainer = document.getElementById('entries-container');
         const recommendedContainer = document.getElementById('recommended-container');
+        const blogContainer = document.getElementById('blog-container');
         const errorMessage = document.getElementById('error-message');
+
+        // Fetch blog posts from blog.json
+        fetch('blog.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(posts => {
+                if (posts.length === 0) {
+                    throw new Error('No blog posts found in the JSON file.');
+                }
+                posts.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.classList.add('blog-post');
+                    const truncatedContent = post.content.length > 150 ? post.content.substring(0, 150) + '...' : post.content;
+                    postDiv.innerHTML = `
+                        <div class="blog-title">${post.title}</div>
+                        <div class="blog-date">${post.date}</div>
+                        <div class="blog-content">${truncatedContent}</div>
+                        ${post.content.length > 150 ? '<button class="blog-expand-button">Read More</button>' : ''}
+                        <div class="blog-full-content hidden">${post.content}</div>
+                    `;
+                    blogContainer.appendChild(postDiv);
+
+                    if (post.content.length > 150) {
+                        const expandButton = postDiv.querySelector('.blog-expand-button');
+                        const fullContent = postDiv.querySelector('.blog-full-content');
+                        expandButton.addEventListener('click', () => {
+                            fullContent.classList.toggle('hidden');
+                            expandButton.textContent = fullContent.classList.contains('hidden') ? 'Read More' : 'Show Less';
+                        });
+                    }
+                });
+                // Render LaTeX after adding blog posts
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ]
+                });
+            })
+            .catch(error => {
+                console.error('Error loading blog posts:', error);
+                errorMessage.textContent = `Error loading blog posts: ${error.message}`;
+                errorMessage.style.display = 'block';
+            });
 
         // Fetch entries from entries.json
         fetch('entries.json')
