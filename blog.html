@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sanscar - Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/contrib/auto-render.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            background-color: #c0c0c0;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+        .window {
+            background-color: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            box-shadow: inset -1px -1px #404040, inset 1px 1px #dfdfdf;
+            padding: 2px;
+            margin-bottom: 20px;
+        }
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: #fff;
+            padding: 3px 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title-bar-text {
+            font-size: 12px;
+        }
+        .title-bar-controls button {
+            width: 16px;
+            height: 14px;
+            border: 1px solid #fff;
+            background-color: #c0c0c0;
+        }
+        .window-body {
+            padding: 10px;
+            background-color: #fff;
+        }
+        .blog-post {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #808080;
+            padding-bottom: 20px;
+        }
+        .blog-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .blog-date {
+            font-size: 0.8em;
+            color: #808080;
+            margin-bottom: 10px;
+        }
+        .blog-content {
+            line-height: 1.6;
+        }
+        .blog-content img {
+            max-width: 100%;
+            height: auto;
+        }
+        #error-message {
+            background-color: #ffcccc;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 10px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-text">sanscar - Blog</div>
+            <div class="title-bar-controls">
+                <button aria-label="Minimize"></button>
+                <button aria-label="Maximize"></button>
+                <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body" id="blog-container">
+            <!-- Blog posts will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <div id="error-message"></div>
+
+    <script>
+        const blogContainer = document.getElementById('blog-container');
+        const errorMessage = document.getElementById('error-message');
+
+        // Configure marked to use KaTeX for LaTeX rendering
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang === 'math') {
+                    return katex.renderToString(code, {
+                        throwOnError: false,
+                        displayMode: true
+                    });
+                }
+                return code;
+            }
+        });
+
+        // Fetch blog posts from blog.json
+        fetch('blog.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(posts => {
+                if (posts.length === 0) {
+                    throw new Error('No blog posts found in the JSON file.');
+                }
+                posts.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.classList.add('blog-post');
+                    postDiv.innerHTML = `
+                        <div class="blog-title">${post.title}</div>
+                        <div class="blog-date">${post.date}</div>
+                        <div class="blog-content">${marked.parse(post.content)}</div>
+                    `;
+                    blogContainer.appendChild(postDiv);
+                });
+                // Render LaTeX after adding blog posts
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ]
+                });
+            })
+            .catch(error => {
+                console.error('Error loading blog posts:', error);
+                errorMessage.textContent = `Error loading blog posts: ${error.message}`;
+                errorMessage.style.display = 'block';
+            });
+    </script>
+</body>
+</html>
