@@ -2,6 +2,6 @@
   {
     "title": "Basics of Distillation",
     "date": "2024-08-01",
-    "content": "# Basics of Distillation\n\n- A large trained model + a good regularizer\n- Distillation - transfer its knowledge to the small model\n- Large model assigns probabilities to the wrong class, less in value but still assigns but it tells us about how they generalize\n- Objective function (training) should reflect true objective, rather trained to optimize performance\n- Real objective = generalize to new data\n\nMore details to be added..."
+    "file": "posts/basics-of-distillation/README.md"
   }
 ]
