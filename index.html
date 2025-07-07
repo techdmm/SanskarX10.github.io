@@ -6,8 +6,11 @@
     <title>sanscar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/katex.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.15.3/contrib/auto-render.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <style>
         body {
             font-family: 'MS Sans Serif', Arial, sans-serif;
@@ -214,6 +217,16 @@
         const blogContainer = document.getElementById('blog-container');
         const errorMessage = document.getElementById('error-message');
 
+        // Configure marked and highlight.js for posts
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            }
+        });
+
         // Fetch blog posts from blog.json
         fetch('blog.json')
             .then(response => {
@@ -226,20 +239,35 @@
                 if (posts.length === 0) {
                     throw new Error('No blog posts found in the JSON file.');
                 }
+                return Promise.all(posts.map(async post => {
+                    const mdRes = await fetch(post.file);
+                    if (!mdRes.ok) {
+                        throw new Error(`Failed to load ${post.file}`);
+                    }
+                    const md = await mdRes.text();
+                    return {...post, md};
+                }));
+            })
+            .then(posts => {
                 posts.forEach(post => {
+                    const html = marked.parse(post.md);
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = html;
+                    const textContent = tmp.textContent || tmp.innerText || '';
+                    const truncatedContent = textContent.length > 150 ? textContent.substring(0, 150) + '...' : textContent;
+
                     const postDiv = document.createElement('div');
                     postDiv.classList.add('blog-post');
-                    const truncatedContent = post.content.length > 150 ? post.content.substring(0, 150) + '...' : post.content;
                     postDiv.innerHTML = `
                         <div class="blog-title">${post.title}</div>
                         <div class="blog-date">${post.date}</div>
                         <div class="blog-content">${truncatedContent}</div>
-                        ${post.content.length > 150 ? '<button class="blog-expand-button">Read More</button>' : ''}
-                        <div class="blog-full-content hidden">${post.content}</div>
+                        ${textContent.length > 150 ? '<button class="blog-expand-button">Read More</button>' : ''}
+                        <div class="blog-full-content hidden">${html}</div>
                     `;
                     blogContainer.appendChild(postDiv);
 
-                    if (post.content.length > 150) {
+                    if (textContent.length > 150) {
                         const expandButton = postDiv.querySelector('.blog-expand-button');
                         const fullContent = postDiv.querySelector('.blog-full-content');
                         expandButton.addEventListener('click', () => {
@@ -247,14 +275,16 @@
                             expandButton.textContent = fullContent.classList.contains('hidden') ? 'Read More' : 'Show Less';
                         });
                     }
+
+                    renderMathInElement(postDiv, {
+                        delimiters: [
+                            {left: "$$", right: "$$", display: true},
+                            {left: "$", right: "$", display: false}
+                        ]
+                    });
                 });
-                // Render LaTeX after adding blog posts
-                renderMathInElement(document.body, {
-                    delimiters: [
-                        {left: "$$", right: "$$", display: true},
-                        {left: "$", right: "$", display: false}
-                    ]
-                });
+
+                hljs.highlightAll();
             })
             .catch(error => {
                 console.error('Error loading blog posts:', error);
